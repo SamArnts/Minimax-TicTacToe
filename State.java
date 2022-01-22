@@ -51,12 +51,12 @@ public class State {
             System.out.println("Please select a column using the corresponding number: ");
             return;
         }
-
         this.boardState = place(boardState, numChoice);
-        this.filled = checFilled(boardState);
+        this.filled = checkFilled(boardState);
         Board.printBoard(boardState);
+        this.won = Board.checkWon(State.getBoardState());
+        this.XTurn = !XTurn;
     }
-
 
     //checks to make sure entry is a integer
     public static boolean validateInt(String choice) {
@@ -67,8 +67,6 @@ public class State {
             System.out.println("Make sure your entry is a number corresponding with a column");
         }return false;
     }
-
-
     public static int[][] place(int board[][], int numChoice) {
         int fillCount = 0;
         
@@ -96,7 +94,7 @@ public class State {
     
 
     //checks if board is filled
-    public boolean checFilled(int [][] boardState) {
+    public boolean checkFilled(int [][] boardState) {
         for (int i = 0; i < boardState.length; i++) {
             for (int j = 0; j < boardState[0].length; j++) {
                 if (boardState[i][j] == 0) {

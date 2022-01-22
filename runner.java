@@ -27,17 +27,34 @@ public class runner {
         if (playerNum.equals("X")) {
             System.out.println("Alright player1, you go first. The CPU will be player2");
             System.out.println("Choose what column you want to place your piece by responding with the corresponding number");
+            ComputerChoice.team = -1;
+        
         }else {
             System.out.println("Alright CPU, you go first. Player2 go next");
+            ComputerChoice.team = 1;
+            ComputerChoice compChoice = new ComputerChoice(State.getBoardState());
+            State.XTurn = true;
+            int comp = compChoice.makeSelection(State.getBoardState());
+            state.setBoardState(Integer.toString(comp));
         }
 
         while (!State.won && !State.filled) {
             String choice = scnr.next();
             state.setBoardState(choice);
-            State.XTurn = !State.XTurn;
+            if (State.won){ break;}
+            ComputerChoice compChoice = new ComputerChoice(State.getBoardState());
+            int comp = compChoice.makeSelection(State.getBoardState());
+            state.setBoardState(Integer.toString(comp));
         }
+
+        if(State.won && !State.XTurn) {
+            System.out.println("Game over, player1/X wins");
+        }else if(State.won && State.XTurn) {
+            System.out.println("Game over, player2/O wins");
+        }else{
+            System.out.println("Cat game");
+        }
+
     }
-
-
 
 }

@@ -2,6 +2,7 @@
 
 public class Board {
     
+    //prints out a graphic representation of the board
     public static void printBoard(int boardState[][]) {
         char [] alphabet = {'a', 'b', 'c', 'd', 'e', 'f'};
         System.out.print(" ");
@@ -12,6 +13,7 @@ public class Board {
         for (int i = 0; i < boardState.length; i++) {
             System.out.print(alphabet[i]);
             for (int j = 0; j < boardState[0].length; j++) {
+                //allows the correct symbol to be printed
                 String symb = assertSymbol(i, j, boardState);
                 System.out.print("|" + symb);
                 
@@ -33,8 +35,10 @@ public class Board {
         return symb;
     }
 
+    //checks to see if someone won
     public static boolean checkWon(int[][] boardState) {
 
+        //check if won for 3X3 boards
         if (boardState.length == 3) {
             //checking for horizontal winners
             for (int j = 0; j < boardState.length; j++) {
@@ -61,24 +65,43 @@ public class Board {
              && boardState[0][0] != 0) {
                   return true;
           }
-
-          //for 6 X 7 boards
-          if (boardState.length == 6) {
+          
+        }
+        //check if won for 6 X 7 boards
+        if (boardState.length == 6) {
             
-            //vertical winners
+            //horizontal check
             for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 7; j++) {
+                for (int j = 0; j < 6; j++) {
                     if (boardState[j][i] == boardState[j][i+1] && boardState[j][i+1] == boardState[j][i+2]
                     && boardState[j][i+2] == boardState[j][i+3] && boardState[j][i] != 0) {
                         return true;
                     }
                 }
             }
-
+            //vertical check
             for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 6; j++) {
-                    if (boardState[i][j] == boardState[i][j+1] && boardState[i][j+1] == boardState[i][j+2]
-                    && boardState[i][j+2] == boardState[i][j+3] && boardState[i][j] != 0) {
+                for (int j = 0; j < 7; j++) {
+                    if (boardState[i][j] == boardState[i+1][j] && boardState[i+1][j] == boardState[i+2][j]
+                    && boardState[i+2][j] == boardState[i+3][j] && boardState[i][j] != 0) {
+                        return true;
+                    }
+                }
+            }
+            
+            //diaganol checks
+            for (int i = 3; i < boardState.length; i++) {
+                for (int j = 0; j < boardState[0].length - 3; j++) {
+                    if (boardState[i][j] == boardState[i-1][j+1] && boardState[i-1][j+1] == boardState[i-2][j+2]
+                    && boardState[i-2][j+2] == boardState[i-3][j+3] && boardState[i][j] != 0) {
+                        return true;
+                    }
+                }
+            }
+            for(int i = 3; i < boardState.length; i++) {
+                for (int j = 3; j < boardState[0].length; j++) {
+                    if (boardState[i][j] == boardState[i-1][j-1] && boardState[i-1][j-1] == boardState[i-2][j-2]
+                    && boardState[i-2][j-2] == boardState[i-3][j-3] && boardState[i][j] != 0) {
                         return true;
                     }
                 }
@@ -86,8 +109,6 @@ public class Board {
 
           }
               
-        }
-        
         return false;
     }
 

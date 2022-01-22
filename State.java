@@ -8,6 +8,7 @@ public class State {
     static boolean XTurn;
     static boolean filled;
 
+    //array list making it easier to print out the boards
     static ArrayList<Integer> smallAlpha = new ArrayList<Integer>(
         Arrays.asList(0, 1, 2)
     );
@@ -15,6 +16,7 @@ public class State {
         Arrays.asList(0, 1, 2, 3, 4, 5, 6)
     );
 
+    //constructor
     public State(String type, String turn) {
         if (type.equals("a")) {
 
@@ -31,10 +33,12 @@ public class State {
         this.filled = false;
     }
 
+    //getter
     public static int[][] getBoardState() {
         return boardState;
     }
-
+    
+    //setter
     public void setBoardState(String choice) {
 
         //checks to make sure entry is an int
@@ -51,6 +55,8 @@ public class State {
             System.out.println("Please select a column using the corresponding number: ");
             return;
         }
+
+        //updates board, checks if someone won, updates turn
         this.boardState = place(boardState, numChoice);
         this.filled = checkFilled(boardState);
         Board.printBoard(boardState);
@@ -78,6 +84,7 @@ public class State {
                 System.out.println("Please choose a column that isn't filled");
                 return board;
                 }else{
+                //places either a 1 or a -1 in the correct spot
                 for (int j = board.length - 1; j >= 0; j--) {
                     if (board[j][numChoice] == 0) {
                         if  (XTurn == true) {

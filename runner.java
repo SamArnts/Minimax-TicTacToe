@@ -15,6 +15,7 @@ public class runner {
             boardType = scnr.next();
         }
         
+        //player chooses whether to be X or O
         System.out.println("Would you like to be player1/X or player2/O? \n"
                             + "(Please respond with either X or O)");
         String playerNum = scnr.next();                   
@@ -22,6 +23,7 @@ public class runner {
             System.out.println("Please respond with either 'X' or 'O' to make your selection");
              playerNum = scnr.next();
         }
+        //creates a new state
         State state = new State(boardType, playerNum);
         Board.printBoard(State.getBoardState());;
         if (playerNum.equals("X")) {
@@ -38,6 +40,7 @@ public class runner {
             state.setBoardState(Integer.toString(comp));
         }
 
+        //keeps the game running in correct conditions
         while (!State.won && !State.filled) {
             String choice = scnr.next();
             state.setBoardState(choice);
@@ -47,6 +50,7 @@ public class runner {
             state.setBoardState(Integer.toString(comp));
         }
 
+        //prints results
         if(State.won && !State.XTurn) {
             System.out.println("Game over, player1/X wins");
         }else if(State.won && State.XTurn) {

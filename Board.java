@@ -112,5 +112,11 @@ public class Board {
         return false;
     }
 
+    public static int move_rating(int[][] boardState, int AI_team ) {
+
+
+        return 0;
+    }
+
 
 }

@@ -112,11 +112,75 @@ public class Board {
         return false;
     }
 
-    public static int move_rating(int[][] boardState, int AI_team ) {
+    //assigns a score to each move
+    public static int move_rating(int[][] boardState, int team) {
+        int score = 0;
+        int team_counter = 0;
+        int empty_counter = 0;
 
+        if (boardState.length == 3) {
+            //horizontal score
+            for (int i = 0; i < boardState.length; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (boardState[i][j] == team) {
+                        team_counter ++;
+                    }
+                    else if (boardState[i][j] == 0) {
+                        empty_counter ++;
+                    }
+                }
+                score += score(team_counter, empty_counter);
+                team_counter = 0;
+                empty_counter = 0;
+            }
+            
 
-        return 0;
+            //vertical score
+            for (int i = 0; i < boardState[0].length; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (boardState[j][i] == team) {
+                        team_counter ++;
+                    }else if (boardState[j][i] == 0) {
+                        empty_counter ++;
+                    }
+                }
+                score += score(team_counter, empty_counter);
+                team_counter = 0;
+                empty_counter = 0;
+            }
+            
+            //diaganol scores
+            for (int i = 0; i < 3; i++) {
+                if (boardState[i][i] == team) {
+                    team_counter++;
+                }else if (boardState[i][i] == 0) {
+                    empty_counter++;
+                }
+            }
+            score += score(team_counter, empty_counter);
+
+            team_counter = 0;
+            empty_counter = 0;
+            for (int i = 0; i < 3; i++) {
+                if (boardState[2-i][i] == team) {
+                    team_counter++;
+                }else if (boardState[2-i][i] == 0) {
+                    empty_counter ++; 
+                }
+            }
+            score += score(team_counter, empty_counter);
+        }
+        return score;
     }
 
+    //returns a score depending on what types of pieces are in each row, col, diag
+    public static int score(int team_counter, int empty_counter) {
+        int score = 0;
+        if (team_counter == 3) {
+            score += 100;
+        }else if (team_counter == 2 && empty_counter == 1) {
+            score += 10;
+        }return score;
+    }
 
 }

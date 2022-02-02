@@ -33,6 +33,11 @@ public class State {
         this.filled = false;
     }
 
+    //constructor 
+    public State (int [][] boardState) {
+        this.boardState = boardState;
+    }
+
     //getter
     public static int[][] getBoardState() {
         return boardState;
@@ -74,16 +79,6 @@ public class State {
         }return false;
     }
     public static int[][] place(int board[][], int numChoice) {
-        int fillCount = 0;
-        
-         for (int i = 0; i < board.length; i++) {
-            if (board[i][numChoice] != 0) {
-                fillCount ++;
-             }
-        }   if (fillCount == board.length) {
-                System.out.println("Please choose a column that isn't filled");
-                return board;
-                }else{
                 //places either a 1 or a -1 in the correct spot
                 for (int j = board.length - 1; j >= 0; j--) {
                     if (board[j][numChoice] == 0) {
@@ -95,10 +90,22 @@ public class State {
                         return board;
                     }
                  }
-             }
               return board;
-        }
+     }
     
+    //checks if a row is filled
+    public static boolean occupied(int[][] boardState, int numChoice) {
+        int fillCount = 0;
+        for (int i = 0; i < boardState.length; i++) {
+            if (boardState[i][numChoice] != 0) {
+                fillCount ++;
+             }
+        }   if (fillCount == boardState.length) {
+                System.out.println("Please choose a column that isn't filled");
+                return true;
+                }
+        return false;
+    }
 
     //checks if board is filled
     public boolean checkFilled(int [][] boardState) {
@@ -110,5 +117,17 @@ public class State {
             }
         }
         return true;
+    }
+
+    //returns a list of possible moves
+    public static ArrayList<Integer> get_valid_moves(int [][] boardState) {
+        ArrayList<Integer> valid_moves = new ArrayList<>();
+
+        for (int i = 0; i < boardState[0].length; i++) {
+            if (!occupied(boardState, i)) {
+                valid_moves.add(i);
+            }
+        }
+        return valid_moves;
     }
 }

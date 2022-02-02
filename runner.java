@@ -16,7 +16,7 @@ public class runner {
         }
         
         //player chooses whether to be X or O
-        System.out.println("Would you like to be player1/X or player2/O? \n"
+        System.out.println("Would you like to be Red/X or Yellow/O? \n"
                             + "(Please respond with either X or O)");
         String playerNum = scnr.next();                   
         while (!(playerNum.equals("X") || playerNum.equals("O"))) {
@@ -43,6 +43,13 @@ public class runner {
         //keeps the game running in correct conditions
         while (!State.won && !State.filled) {
             String choice = scnr.next();
+            //checks if the entry is a number in the correct range
+            while (!State.validateInt(choice)) {
+                 choice = scnr.next();
+            }//checks if the row is already occupied
+            while(State.occupied(State.boardState, Integer.parseInt(choice))) {
+                choice = scnr.next();
+            }
             state.setBoardState(choice);
             if (State.won){ break;}
             ComputerChoice compChoice = new ComputerChoice(State.getBoardState());
@@ -52,9 +59,9 @@ public class runner {
 
         //prints results
         if(State.won && !State.XTurn) {
-            System.out.println("Game over, player1/X wins");
+            System.out.println("Game over, Red/X wins");
         }else if(State.won && State.XTurn) {
-            System.out.println("Game over, player2/O wins");
+            System.out.println("Game over, Yellow/O wins");
         }else{
             System.out.println("Cat game");
         }

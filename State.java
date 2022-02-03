@@ -6,6 +6,7 @@ public class State {
     static int boardState[][];
     static boolean won;
     static boolean XTurn;
+    static boolean humanTurn;
     static boolean filled;
 
     //array list making it easier to print out the boards
@@ -62,10 +63,11 @@ public class State {
         }
 
         //updates board, checks if someone won, updates turn
-        this.boardState = place(boardState, numChoice);
-        this.filled = checkFilled(boardState);
+        this.boardState = place(boardState, numChoice, 999);
+        this.filled = Board.checkFilled(boardState);
         Board.printBoard(boardState);
-        this.won = Board.checkWon(State.getBoardState());
+        this.won = Board.checkWon(State.getBoardState(), ComputerChoice.team);
+        this.humanTurn = !humanTurn;
         this.XTurn = !XTurn;
     }
 
@@ -78,13 +80,13 @@ public class State {
             System.out.println("Make sure your entry is a number corresponding with a column");
         }return false;
     }
-    public static int[][] place(int board[][], int numChoice) {
+    public static int[][] place(int board[][], int numChoice, int team) {
                 //places either a 1 or a -1 in the correct spot
                 for (int j = board.length - 1; j >= 0; j--) {
                     if (board[j][numChoice] == 0) {
-                        if  (XTurn == true) {
+                        if  (XTurn == true || team == 1) {
                             board[j][numChoice] = 1;
-                        }else {
+                        }else if (XTurn == false || team == -1) {
                             board[j][numChoice] = -1;
                         }
                         return board;
@@ -101,23 +103,13 @@ public class State {
                 fillCount ++;
              }
         }   if (fillCount == boardState.length) {
-                System.out.println("Please choose a column that isn't filled");
+                if (humanTurn) {System.out.println("Please choose a column that isn't filled");}
                 return true;
                 }
         return false;
     }
 
-    //checks if board is filled
-    public boolean checkFilled(int [][] boardState) {
-        for (int i = 0; i < boardState.length; i++) {
-            for (int j = 0; j < boardState[0].length; j++) {
-                if (boardState[i][j] == 0) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
+    
 
     //returns a list of possible moves
     public static ArrayList<Integer> get_valid_moves(int [][] boardState) {

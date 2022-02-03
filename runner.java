@@ -27,8 +27,9 @@ public class runner {
         State state = new State(boardType, playerNum);
         Board.printBoard(State.getBoardState());;
         if (playerNum.equals("X")) {
-            System.out.println("Alright player1, you go first. The CPU will be player2");
+            System.out.println("Alright X, you go first. The CPU will be O");
             System.out.println("Choose what column you want to place your piece by responding with the corresponding number");
+            State.humanTurn = true;
             ComputerChoice.team = -1;
         
         }else {
@@ -36,6 +37,7 @@ public class runner {
             ComputerChoice.team = 1;
             ComputerChoice compChoice = new ComputerChoice(State.getBoardState());
             State.XTurn = true;
+            State.humanTurn = false;
             int comp = compChoice.makeSelection(State.getBoardState());
             state.setBoardState(Integer.toString(comp));
         }

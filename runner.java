@@ -25,44 +25,43 @@ public class runner {
         }
         //creates a new state
         State state = new State(boardType, playerNum);
-        Board.printBoard(State.getBoardState());;
+        Board.printBoard(state.getBoardState());;
+        ComputerChoice compChoice = new ComputerChoice();
         if (playerNum.equals("X")) {
             System.out.println("Alright X, you go first. The CPU will be O");
             System.out.println("Choose what column you want to place your piece by responding with the corresponding number");
-            State.humanTurn = true;
-            ComputerChoice.team = -1;
+            state.humanTurn = true;
+            compChoice.team = -1;
         
         }else {
             System.out.println("Alright CPU, you go first. Player2 go next");
-            ComputerChoice.team = 1;
-            ComputerChoice compChoice = new ComputerChoice(State.getBoardState());
-            State.XTurn = true;
-            State.humanTurn = false;
-            int comp = compChoice.makeSelection(State.getBoardState());
-            state.setBoardState(Integer.toString(comp));
+            compChoice.team = 1;
+            state.XTurn = true;
+            state.humanTurn = false;
+            int comp = compChoice.makeSelection(state.getBoardState(),1);
+            state.setBoardState(Integer.toString(comp), compChoice.team);
         }
 
         //keeps the game running in correct conditions
-        while (!State.won && !State.filled) {
+        while (!state.won && !state.filled) {
             String choice = scnr.next();
             //checks if the entry is a number in the correct range
-            while (!State.validateInt(choice)) {
+            while (!state.validateInt(choice)) {
                  choice = scnr.next();
             }//checks if the row is already occupied
-            while(State.occupied(State.boardState, Integer.parseInt(choice))) {
+            while(state.occupied(state.boardState, Integer.parseInt(choice), state)) {
                 choice = scnr.next();
             }
-            state.setBoardState(choice);
-            if (State.won){ break;}
-            ComputerChoice compChoice = new ComputerChoice(State.getBoardState());
-            int comp = compChoice.makeSelection(State.getBoardState());
-            state.setBoardState(Integer.toString(comp));
+            state.setBoardState(choice, -compChoice.team);
+            if (state.won){ break;}
+            int comp = compChoice.makeSelection(state.getBoardState(), compChoice.team);
+            state.setBoardState(Integer.toString(comp), compChoice.team);
         }
 
         //prints results
-        if(State.won && !State.XTurn) {
+        if(state.won && !state.XTurn) {
             System.out.println("Game over, Red/X wins");
-        }else if(State.won && State.XTurn) {
+        }else if(state.won && state.XTurn) {
             System.out.println("Game over, Yellow/O wins");
         }else{
             System.out.println("Cat game");

@@ -2,6 +2,7 @@
 
 public class Board {
     
+    public static final int WINDOW = 4;
     //prints out a graphic representation of the board
     public static void printBoard(int boardState[][]) {
         char [] alphabet = {'a', 'b', 'c', 'd', 'e', 'f'};
@@ -35,8 +36,8 @@ public class Board {
         return symb;
     }
 
-    //checks to see if someone won
-    public static boolean checkWon(int[][] boardState, int team) {
+    //checks to see if specified team won
+    public boolean checkWon(int[][] boardState, int team) {
 
         //check if won for 3X3 boards
         if (boardState.length == 3) {
@@ -44,10 +45,7 @@ public class Board {
             for (int j = 0; j < boardState.length; j++) {
                 if (boardState[j][0] == boardState[j][1]
                  && boardState[j][1] == boardState[j][2]
-                && boardState[j][0] != 0) {
-                    if (boardState[j][0] == ComputerChoice.team) {
-                        ComputerChoice.CPU_won = true;
-                    }
+                && boardState[j][0] == team) {
                     return true;
                 }
             }
@@ -55,36 +53,26 @@ public class Board {
             for (int j = 0; j < boardState.length; j++) {
                 if (boardState[0][j] == boardState[1][j]
                 && boardState[1][j] == boardState[2][j]
-                && boardState[0][j] != 0) {
-                    if (boardState[0][j] == ComputerChoice.team) {
-                        ComputerChoice.CPU_won = true;
-                    }else {ComputerChoice.human_won = true;}
-                      return true;
+                && boardState[0][j] == team) {
+                    return true;
                 }
             }
             //checking for diaganols
             if(boardState[2][0] == boardState[1][1] && boardState[1][1] == boardState[0][2]
-               && boardState[2][0] != 0) {
-                if (boardState[2][0] == ComputerChoice.team) {
-                    ComputerChoice.CPU_won = true;
-                }else {ComputerChoice.human_won = true;}
+               && boardState[2][0] == team) {
                     return true;
             }
              if(boardState[0][0] == boardState[1][1] && boardState[1][1] == boardState[2][2]
-             && boardState[0][0] != 0) {
-                if (boardState[0][0] == ComputerChoice.team) {
-                    ComputerChoice.CPU_won = true;
-                }else {ComputerChoice.human_won = true;}
+             && boardState[0][0] == team) {
                   return true;
           }
           
         }
-
         //check if won for 6 X 7 boards
         if (boardState.length == 6) {
             
             //horizontal check
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 4; i++) {
                 for (int j = 0; j < 6; j++) {
                     if (boardState[j][i] == boardState[j][i+1] && boardState[j][i+1] == boardState[j][i+2]
                     && boardState[j][i+2] == boardState[j][i+3] && boardState[j][i] != 0) {
@@ -126,7 +114,7 @@ public class Board {
     }
 
     //checks if board is filled
-    public static boolean checkFilled(int [][] boardState) {
+    public boolean checkFilled(int [][] boardState) {
         for (int i = 0; i < boardState.length; i++) {
             for (int j = 0; j < boardState[0].length; j++) {
                 if (boardState[i][j] == 0) {
@@ -138,100 +126,142 @@ public class Board {
     }
     
     //assigns a score to each move
-    public static int move_rating(int[][] boardState, int team) {
+    public int move_rating(int[][] boardState, int team) {
         int score = 0;
         int team_counter = 0;
         int empty_counter = 0;
         int enemy_counter = 0;
+        boolean enemy_won = false;
 
+        //for 3X3 boards, only 0 is returned (no heuristic!!!)
         if (boardState.length == 3) {
-            //horizontal score
+ 
+            return 0;
+        }
+        
+        //for 6X7 boards
+        else {
+
+            //horizontal
             for (int i = 0; i < boardState.length; i++) {
-                for (int j = 0; j < 3; j++) {
-                    if (boardState[i][j] == team) {
-                        team_counter++;
+                for (int j = 0; j < boardState[0].length - 3; j++) {
+                    for (int k = 0; k < WINDOW; k++) {
+                        if (boardState[i][j+k] == team) {
+                            team_counter++;
+                        }
+                        else if (boardState[i][j+k] == 0) {
+                            empty_counter++;
+                        }
+                        else if (boardState[i][j+k] == -team) {
+                            enemy_counter++;
+                        }
                     }
-                    else if (boardState[i][j] == 0) {
-                        empty_counter++;
-                    }
-                    else if (boardState[i][j] == -team) {
-                        enemy_counter++;
-                    }
+                    score += score(team_counter, empty_counter, enemy_counter, 6);
+                    team_counter = 0;
+                    empty_counter = 0;
+                    enemy_counter = 0;
                 }
-                score += score(team_counter, empty_counter, enemy_counter);
-                team_counter = 0;
-                empty_counter = 0;
-                enemy_counter = 0;
             }
-            
+           
 
-            //vertical score
+            //vertical
             for (int i = 0; i < boardState[0].length; i++) {
-                for (int j = 0; j < 3; j++) {
-                    if (boardState[j][i] == team) {
-                        team_counter ++;
-                    }else if (boardState[j][i] == 0) {
-                        empty_counter ++;
-                    }else if (boardState[j][i] == -team) {
-                        enemy_counter++;
+                for (int j = 0; j < boardState.length-3; j++) {
+                    for (int k = 0; k < WINDOW; k ++) {
+                        if (boardState[j+k][i] == team) {
+                            team_counter++;
+                        }
+                        else if (boardState[j+k][i] == 0) {
+                            empty_counter++;
+                        }
+                        else if (boardState[j+k][i] == -team) {
+                            enemy_counter++;
+                        }
                     }
+                    score += score(team_counter, empty_counter, enemy_counter, 6);
+                    team_counter = 0;
+                    empty_counter = 0;
+                    enemy_counter = 0;
                 }
-                score += score(team_counter, empty_counter, enemy_counter);
-                team_counter = 0;
-                empty_counter = 0;
-                enemy_counter = 0;
             }
             
-            //diaganol scores
-            for (int i = 0; i < 3; i++) {
-                if (boardState[i][i] == team) {
-                    team_counter++;
-                }else if (boardState[i][i] == 0) {
-                    empty_counter++;
-                }else if (boardState[i][i] == -team) {
-                    enemy_counter++;
+
+            //upwards diaganols
+            for (int i = 0; i < boardState.length - 3; i++) {
+                for (int j = 0; j < boardState[0].length - 3; j++) {
+                    for (int k = 0; k < WINDOW; k++) {
+                        if (boardState[i+k][j+k] == team) {
+                            team_counter++;
+                        }
+                        else if (boardState[i+k][j+k] == 0) {
+                            empty_counter++;
+                        }
+                        else if (boardState[i+k][j+k] == -team) {
+                            enemy_counter++;
+                        }
+                    }
+                    score += score(team_counter, empty_counter, enemy_counter, 6);
+                    team_counter = 0;
+                    empty_counter = 0;
+                    enemy_counter = 0;
+                   
+                }
+               
+            }
+
+            //downwards diagonals
+            for (int i = 0; i < boardState.length - 3; i++) {
+                for (int j = 0; j < boardState[0].length - 3; j++) {
+                    for (int k = 0; k < WINDOW; k++) {
+                        if (boardState[i + 3 - k][j + k] == team) {
+                            team_counter++;
+                        }
+                        else if (boardState[i][j] == 0) {
+                            empty_counter++;
+                        }
+                        else if (boardState[i][j] == -team) {
+                            enemy_counter++;
+                        }
+                    }
+                    score += score(team_counter, empty_counter, enemy_counter, 6);
+                    team_counter = 0;
+                    empty_counter = 0;
+                    enemy_counter = 0;
                 }
             }
-            score += score(team_counter, empty_counter, enemy_counter);
-
-            team_counter = 0;
-            empty_counter = 0;
-            for (int i = 0; i < 3; i++) {
-                if (boardState[2-i][i] == team) {
-                    team_counter++;
-                }else if (boardState[2-i][i] == 0) {
-                    empty_counter ++; 
-                }else if (boardState[i][i] == -team) {
-                    enemy_counter++;
-                }
-            }
-            score += score(team_counter, empty_counter, enemy_counter);
-
-            team_counter = 0;
-            empty_counter = 0;
+            
             //score for center (in theory more preferable)
-            for (int i = 0; i < 3; i++) {
-                if (boardState[i][1] == team) {
+            for (int i = 0; i < boardState.length; i++) {
+                if (boardState[i][3] == team) {
                     team_counter++;
                 }
             }
-            score += team_counter * 6;
+
+            score += team_counter * 3;
 
         }
+
+
         return score;
     }
 
     //returns a score depending on what types of pieces are in each row, col, diag
-    public static int score(int team_counter, int empty_counter, int enemy_counter) {
+    //only for 6x7 board
+    public static int score(int team_counter, int empty_counter, int enemy_counter, int board_length) {
+
         int score = 0;
-        if (team_counter == 3) {
-            score += 100;
-        }else if (team_counter == 2 && empty_counter == 1) {
+        if (team_counter == 4) {
+            score += 1000;
+            }
+         else if (team_counter == 3 && empty_counter == 1) {
             score += 10;
-        }else if (enemy_counter == 2 && empty_counter == 1) {
-            score -=80;
+        }else if (team_counter == 2 && empty_counter ==2) {
+            score += 2;
+        }else if(enemy_counter == 3 && empty_counter == 1) {
+            score -= 5;
         }
-        return score;
+            return score;
+        
     }
 
 }

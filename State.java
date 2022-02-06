@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 
+//represents the state of the board
 public class State {
     
     int boardState[][];
@@ -81,6 +82,8 @@ public class State {
             System.out.println("Make sure your entry is a number corresponding with a column");
         }return false;
     }
+
+    //places a piece on the board
     public int[][] place(int board[][], int numChoice, int team) {
                 //places either a 1 or a -1 in the correct spot
                 for (int j = board.length - 1; j >= 0; j--) {

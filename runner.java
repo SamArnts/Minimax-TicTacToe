@@ -6,6 +6,9 @@ public class runner {
 
         Scanner scnr = new Scanner(System.in);
 
+        //represents depth of search, user can change for 6x7 boards
+        int depth = 9999999;
+
         //selecting board type
         System.out.println("Would you like to play: \n a) 3X3 connect four \n b) 6X7 connect four ");
         System.out.println("(respond with 'a' or 'b)");
@@ -14,12 +17,22 @@ public class runner {
             System.out.println("Please respond with either 'a' or 'b' to make your selection");
             boardType = scnr.next();
         }
+
+        if (boardType.equals("b")) {
+            System.out.println("What depth would you like to choose as your depth limit? \n" + 
+            "We recommend 9 for a challenging yet speedy game");
+            try {
+                 depth = scnr.nextInt();
+            }catch(NumberFormatException e) {
+                System.out.println("Please enter an Integer");
+            }
+        }
         
         //player chooses whether to be X or O
         System.out.println("Would you like to be Red/X or Yellow/O? \n"
                             + "(Please respond with either X or O)");
         String playerNum = scnr.next();                   
-        while (!(playerNum.equals("X") || playerNum.equals("O"))) {
+        while (!(playerNum.equals("X") || playerNum.equals("O") || playerNum.equals("x") || playerNum.equals("o"))) {
             System.out.println("Please respond with either 'X' or 'O' to make your selection");
              playerNum = scnr.next();
         }
@@ -27,7 +40,7 @@ public class runner {
         State state = new State(boardType, playerNum);
         Board.printBoard(state.getBoardState());;
         ComputerChoice compChoice = new ComputerChoice();
-        if (playerNum.equals("X")) {
+        if (playerNum.equals("X") || playerNum.equals("x")) {
             System.out.println("Alright X, you go first. The CPU will be O");
             System.out.println("Choose what column you want to place your piece by responding with the corresponding number");
             state.humanTurn = true;
@@ -38,7 +51,7 @@ public class runner {
             compChoice.team = 1;
             state.XTurn = true;
             state.humanTurn = false;
-            int comp = compChoice.makeSelection(state.getBoardState(),1);
+            int comp = compChoice.makeSelection(state.getBoardState(),1, depth);
             state.setBoardState(Integer.toString(comp), compChoice.team);
         }
 
@@ -54,7 +67,7 @@ public class runner {
             }
             state.setBoardState(choice, -compChoice.team);
             if (state.won){ break;}
-            int comp = compChoice.makeSelection(state.getBoardState(), compChoice.team);
+            int comp = compChoice.makeSelection(state.getBoardState(), compChoice.team, depth);
             state.setBoardState(Integer.toString(comp), compChoice.team);
         }
 

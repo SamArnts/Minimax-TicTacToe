@@ -1,5 +1,5 @@
 
-
+//contains methods that prints boards, scores boards, checks if someone has won
 public class Board {
     
     public static final int WINDOW = 4;
@@ -36,7 +36,7 @@ public class Board {
         return symb;
     }
 
-    //checks to see if specified team won
+    //checks to see if someone won
     public boolean checkWon(int[][] boardState, int team) {
 
         //check if won for 3X3 boards
@@ -68,6 +68,7 @@ public class Board {
           }
           
         }
+
         //check if won for 6 X 7 boards
         if (boardState.length == 6) {
             
@@ -125,13 +126,12 @@ public class Board {
         return true;
     }
     
-    //assigns a score to each move
+    //counts number of pieces in a 4x4 window, returns a score
     public int move_rating(int[][] boardState, int team) {
         int score = 0;
         int team_counter = 0;
         int empty_counter = 0;
         int enemy_counter = 0;
-        boolean enemy_won = false;
 
         //for 3X3 boards, only 0 is returned (no heuristic!!!)
         if (boardState.length == 3) {
@@ -155,19 +155,21 @@ public class Board {
                         else if (boardState[i][j+k] == -team) {
                             enemy_counter++;
                         }
+                        
                     }
                     score += score(team_counter, empty_counter, enemy_counter, 6);
                     team_counter = 0;
                     empty_counter = 0;
                     enemy_counter = 0;
                 }
+                
             }
-           
+            
 
             //vertical
             for (int i = 0; i < boardState[0].length; i++) {
                 for (int j = 0; j < boardState.length-3; j++) {
-                    for (int k = 0; k < WINDOW; k ++) {
+                    for (int k = 0; k < WINDOW; k++) {
                         if (boardState[j+k][i] == team) {
                             team_counter++;
                         }
@@ -177,14 +179,16 @@ public class Board {
                         else if (boardState[j+k][i] == -team) {
                             enemy_counter++;
                         }
+                        
                     }
                     score += score(team_counter, empty_counter, enemy_counter, 6);
                     team_counter = 0;
                     empty_counter = 0;
                     enemy_counter = 0;
                 }
+                
             }
-            
+           
 
             //upwards diaganols
             for (int i = 0; i < boardState.length - 3; i++) {
@@ -199,7 +203,9 @@ public class Board {
                         else if (boardState[i+k][j+k] == -team) {
                             enemy_counter++;
                         }
+                        
                     }
+                    
                     score += score(team_counter, empty_counter, enemy_counter, 6);
                     team_counter = 0;
                     empty_counter = 0;
@@ -208,7 +214,7 @@ public class Board {
                 }
                
             }
-
+            
             //downwards diagonals
             for (int i = 0; i < boardState.length - 3; i++) {
                 for (int j = 0; j < boardState[0].length - 3; j++) {
@@ -229,7 +235,7 @@ public class Board {
                     enemy_counter = 0;
                 }
             }
-            
+
             //score for center (in theory more preferable)
             for (int i = 0; i < boardState.length; i++) {
                 if (boardState[i][3] == team) {
@@ -237,30 +243,25 @@ public class Board {
                 }
             }
 
-            score += team_counter * 3;
+            score += team_counter * 5;
 
         }
-
-
         return score;
     }
 
     //returns a score depending on what types of pieces are in each row, col, diag
-    //only for 6x7 board
+    //heuristic function!
     public static int score(int team_counter, int empty_counter, int enemy_counter, int board_length) {
-
         int score = 0;
-        if (team_counter == 4) {
-            score += 1000;
-            }
-         else if (team_counter == 3 && empty_counter == 1) {
-            score += 10;
-        }else if (team_counter == 2 && empty_counter ==2) {
-            score += 2;
-        }else if(enemy_counter == 3 && empty_counter == 1) {
-            score -= 5;
+        
+        if (team_counter == 3 && empty_counter == 1) {
+            score += 3;
         }
-            return score;
+        else if(enemy_counter == 3 && empty_counter == 1) {
+             score -= 3;
+        }
+
+        return score;
         
     }
 
